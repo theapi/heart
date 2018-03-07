@@ -1,4 +1,5 @@
 EESchema Schematic File Version 2
+LIBS:project-rescue
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -29,7 +30,6 @@ LIBS:atmel
 LIBS:contrib
 LIBS:valves
 LIBS:stm32_theapi
-LIBS:project-cache
 EELAYER 25 0
 EELAYER END
 $Descr A4 11693 8268
@@ -56,7 +56,7 @@ F 3 "" H 5675 3925 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L CONN_01X05 J1
+L Conn_01x05 J1
 U 1 1 5A9FF0BA
 P 2825 3625
 F 0 "J1" H 2825 3925 50  0000 C CNN
@@ -237,17 +237,11 @@ Wire Wire Line
 Wire Wire Line
 	3025 3625 3525 3625
 Wire Wire Line
-	5575 2325 5575 2525
+	5575 2325 5575 2925
 Wire Wire Line
-	5575 2525 5575 2925
+	5675 2325 5675 2925
 Wire Wire Line
-	5675 2325 5675 2525
-Wire Wire Line
-	5675 2525 5675 2925
-Wire Wire Line
-	5575 2325 5625 2325
-Wire Wire Line
-	5625 2325 5675 2325
+	5575 2325 5675 2325
 Connection ~ 5625 2325
 Connection ~ 5675 2525
 Connection ~ 5575 2525
