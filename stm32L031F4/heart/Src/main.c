@@ -38,6 +38,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stm32l0xx_hal.h"
+#include "tim.h"
 #include "gpio.h"
 
 /* USER CODE BEGIN Includes */
@@ -92,7 +93,23 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_TIM2_Init();
+  MX_TIM21_Init();
+  MX_TIM22_Init();
   /* USER CODE BEGIN 2 */
+
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
+
+  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
+  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
+  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
+  HAL_TIM_PWM_Start(&htim21, TIM_CHANNEL_1);
+  HAL_TIM_PWM_Start(&htim21, TIM_CHANNEL_2);
+  HAL_TIM_PWM_Start(&htim22, TIM_CHANNEL_1);
+  HAL_TIM_PWM_Start(&htim22, TIM_CHANNEL_2);
+
+  uint32_t fade1 = 0;
+  uint8_t direction = 0;
 
   /* USER CODE END 2 */
 
@@ -104,8 +121,30 @@ int main(void)
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
-    HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_0);
-    HAL_Delay(500);
+
+    if (direction == 0) {
+        fade1++;
+    } else {
+        fade1--;
+    }
+
+    if (fade1 == 255) {
+      direction = 1;
+
+    } else if (fade1 == 0) {
+      HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_0);
+      direction = 0;
+    }
+
+    // PA1     ------> TIM2_CH2
+    htim2.Instance->CCR2 = fade1;
+    // PA6     ------> TIM22_CH1
+    htim22.Instance->CCR1 = fade1;
+    // PA2     ------> TIM21_CH1
+    // Opposite direction.
+    htim21.Instance->CCR1 = 255 - fade1;
+
+    HAL_Delay(5);
 
   }
   /* USER CODE END 3 */
@@ -131,7 +170,7 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_MSI;
   RCC_OscInitStruct.MSIState = RCC_MSI_ON;
   RCC_OscInitStruct.MSICalibrationValue = 0;
-  RCC_OscInitStruct.MSIClockRange = RCC_MSIRANGE_5;
+  RCC_OscInitStruct.MSIClockRange = RCC_MSIRANGE_4;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
@@ -151,6 +190,8 @@ void SystemClock_Config(void)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
+
+  HAL_RCC_MCOConfig(RCC_MCO2, RCC_MCO1SOURCE_SYSCLK, RCC_MCODIV_1);
 
     /**Configure the Systick interrupt time 
     */
