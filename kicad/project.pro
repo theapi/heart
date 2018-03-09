@@ -1,4 +1,4 @@
-update=Wed 07 Mar 2018 20:35:06 GMT
+update=Friday, 09 March 2018 'pmt' 12:59:08
 version=1
 last_client=kicad
 [pcbnew]
@@ -60,3 +60,4 @@ LibName28=atmel
 LibName29=contrib
 LibName30=valves
 LibName31=stm32_theapi
+LibName32=switches

@@ -913,7 +913,7 @@
   )
 
   (module Housings_SSOP:TSSOP-20_4.4x6.5mm_Pitch0.65mm (layer B.Cu) (tedit 54130A77) (tstamp 5AA13B52)
-    (at 124.7 178.4)
+    (at 129.95 99.925)
     (descr "20-Lead Plastic Thin Shrink Small Outline (ST)-4.4 mm Body [TSSOP] (see Microchip Packaging Specification 00000049BS.pdf)")
     (tags "SSOP 0.65")
     (path /5A9FF0B9)
