@@ -537,8 +537,6 @@ Wire Wire Line
 NoConn ~ 6175 3825
 Wire Wire Line
 	1250 1300 1250 1575
-Wire Wire Line
-	2250 1300 3025 1300
 Text Notes 3200 875  0    60   ~ 0
 3V
 Wire Notes Line
@@ -554,20 +552,7 @@ Power
 Wire Wire Line
 	1250 1300 1850 1300
 Wire Wire Line
-	3025 1300 3025 975 
-Wire Wire Line
 	1250 2000 1250 1875
-$Comp
-L SW_SPST SW1
-U 1 1 5AA2904E
-P 2050 1300
-F 0 "SW1" H 2050 1425 50  0000 C CNN
-F 1 "SW_SPST" H 2050 1200 50  0000 C CNN
-F 2 "Buttons_Switches_THT:SW_Tactile_Straight_KSA0Axx1LFTR" H 2050 1300 50  0001 C CNN
-F 3 "" H 2050 1300 50  0001 C CNN
-	1    2050 1300
-	1    0    0    -1  
-$EndComp
 Wire Notes Line
 	575  2425 3650 2425
 Wire Notes Line
@@ -595,4 +580,20 @@ Wire Wire Line
 Wire Wire Line
 	6300 2525 6300 2600
 NoConn ~ 6175 3425
+$Comp
+L SW_DPDT_x2 SW1
+U 1 1 5AA401EC
+P 2050 1300
+F 0 "SW1" H 2050 1470 50  0000 C CNN
+F 1 "SW_DPDT_x2" H 2050 1100 50  0000 C CNN
+F 2 "Buttons_Switches_THT:SW_Micro_SPST" H 2050 1300 50  0001 C CNN
+F 3 "" H 2050 1300 50  0001 C CNN
+	1    2050 1300
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2250 1200 3025 1200
+Wire Wire Line
+	3025 1200 3025 975 
+NoConn ~ 2250 1400
 $EndSCHEMATC

@@ -1,3 +1,4 @@
 (fp_lib_table
   (lib (name theapi)(type KiCad)(uri "$(KIPRJMOD)/theapi.pretty")(options "")(descr ""))
+  (lib (name Buttons_Switches_THT)(type KiCad)(uri "$(KISYSMOD)Buttons_Switches_THT.pretty")(options "")(descr ""))
 )
