@@ -778,4 +778,6 @@ F 3 "" H 1850 3275 50  0001 C CNN
 	1    1850 3275
 	-1   0    0    -1  
 $EndComp
+Text Label 1825 1300 2    60   ~ 0
+BATT_UNSWITCHED
 $EndSCHEMATC
