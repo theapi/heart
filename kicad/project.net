@@ -1,7 +1,7 @@
 (export (version D)
   (design
     (source /Users/peterclarke/repos/heart/kicad/project.sch)
-    (date "Tuesday, 20 March 2018 'amt' 09:58:06")
+    (date "Tuesday, 20 March 2018 'pmt' 13:14:28")
     (tool "Eeschema 4.0.6")
     (sheet (number 1) (name /) (tstamps /)
       (title_block
@@ -203,7 +203,7 @@
       (tstamp 5AAEB4A4))
     (comp (ref J1)
       (value Conn_01x05)
-      (footprint Pin_Headers:Pin_Header_Straight_1x05_Pitch2.54mm)
+      (footprint theapi:SWD_Header)
       (libsource (lib project-cache) (part Conn_01x05))
       (sheetpath (names /) (tstamps /))
       (tstamp 5AAE9626))
@@ -364,14 +364,14 @@
         (pin (num 2) (name B) (type passive))
         (pin (num 3) (name C) (type passive)))))
   (libraries
-    (library (logical device)
-      (uri "/Library/Application Support/kicad/library/device.lib"))
-    (library (logical stm32_theapi)
-      (uri /Users/peterclarke/repos/heart/kicad/stm32_theapi.lib))
     (library (logical switches)
       (uri "/Library/Application Support/kicad/library/switches.lib"))
     (library (logical project-cache)
-      (uri /Users/peterclarke/repos/heart/kicad/project-cache.lib)))
+      (uri /Users/peterclarke/repos/heart/kicad/project-cache.lib))
+    (library (logical stm32_theapi)
+      (uri /Users/peterclarke/repos/heart/kicad/stm32_theapi.lib))
+    (library (logical device)
+      (uri "/Library/Application Support/kicad/library/device.lib")))
   (nets
     (net (code 1) (name /BATT_PROTECTED)
       (node (ref SW1) (pin 2))

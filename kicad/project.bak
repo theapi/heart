@@ -426,17 +426,11 @@ Mounting Hole
 Wire Wire Line
 	5175 3625 4950 3625
 Wire Wire Line
-	5575 2325 5575 2525
+	5575 2325 5575 2925
 Wire Wire Line
-	5575 2525 5575 2925
+	5675 2325 5675 2925
 Wire Wire Line
-	5675 2325 5675 2525
-Wire Wire Line
-	5675 2525 5675 2925
-Wire Wire Line
-	5575 2325 5625 2325
-Wire Wire Line
-	5625 2325 5675 2325
+	5575 2325 5675 2325
 Connection ~ 5625 2325
 Connection ~ 5675 2525
 Connection ~ 5575 2525
@@ -487,9 +481,7 @@ Wire Notes Line
 Wire Notes Line
 	575  2275 575  675 
 Wire Wire Line
-	1000 1875 1000 1975
-Wire Wire Line
-	1000 1975 1000 2000
+	1000 1875 1000 2000
 Wire Notes Line
 	575  2425 3650 2425
 Wire Notes Line
@@ -659,19 +651,11 @@ F 3 "" H 9725 4225 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 Wire Wire Line
-	7775 2175 8375 2175
-Wire Wire Line
-	8375 2175 9050 2175
-Wire Wire Line
-	9050 2175 9725 2175
+	7775 2175 9725 2175
 Connection ~ 8375 2175
 Connection ~ 9050 2175
 Wire Wire Line
-	8375 2475 9050 2475
-Wire Wire Line
-	9050 2475 9725 2475
-Wire Wire Line
-	9725 2475 10275 2475
+	8375 2475 10275 2475
 Connection ~ 9050 2475
 Connection ~ 9725 2475
 Text Notes 8175 1950 0    60   Italic 0
@@ -683,83 +667,43 @@ Option 3
 Text Notes 8225 1725 0    60   ~ 0
 Different sized led footprint options
 Wire Wire Line
-	7775 2550 8375 2550
-Wire Wire Line
-	8375 2550 9050 2550
-Wire Wire Line
-	9050 2550 9725 2550
+	7775 2550 9725 2550
 Connection ~ 8375 2550
 Connection ~ 9050 2550
 Wire Wire Line
-	8375 2850 9050 2850
-Wire Wire Line
-	9050 2850 9725 2850
-Wire Wire Line
-	9725 2850 10275 2850
+	8375 2850 10275 2850
 Connection ~ 9050 2850
 Connection ~ 9725 2850
 Wire Wire Line
-	7775 2950 8375 2950
-Wire Wire Line
-	8375 2950 9050 2950
-Wire Wire Line
-	9050 2950 9725 2950
+	7775 2950 9725 2950
 Connection ~ 8375 2950
 Connection ~ 9050 2950
 Wire Wire Line
-	8375 3250 9050 3250
-Wire Wire Line
-	9050 3250 9725 3250
-Wire Wire Line
-	9725 3250 10275 3250
+	8375 3250 10275 3250
 Connection ~ 9050 3250
 Connection ~ 9725 3250
 Wire Wire Line
-	7775 3325 8375 3325
-Wire Wire Line
-	8375 3325 9050 3325
-Wire Wire Line
-	9050 3325 9725 3325
+	7775 3325 9725 3325
 Connection ~ 8375 3325
 Connection ~ 9050 3325
 Wire Wire Line
-	8375 3625 9050 3625
-Wire Wire Line
-	9050 3625 9725 3625
-Wire Wire Line
-	9725 3625 10275 3625
+	8375 3625 10275 3625
 Connection ~ 9050 3625
 Connection ~ 9725 3625
 Wire Wire Line
-	7775 3700 8375 3700
-Wire Wire Line
-	8375 3700 9050 3700
-Wire Wire Line
-	9050 3700 9725 3700
+	7775 3700 9725 3700
 Connection ~ 8375 3700
 Connection ~ 9050 3700
 Wire Wire Line
-	8375 4000 9050 4000
-Wire Wire Line
-	9050 4000 9725 4000
-Wire Wire Line
-	9725 4000 10275 4000
+	8375 4000 10275 4000
 Connection ~ 9050 4000
 Connection ~ 9725 4000
 Wire Wire Line
-	7775 4075 8375 4075
-Wire Wire Line
-	8375 4075 9050 4075
-Wire Wire Line
-	9050 4075 9725 4075
+	7775 4075 9725 4075
 Connection ~ 8375 4075
 Connection ~ 9050 4075
 Wire Wire Line
-	8375 4375 9050 4375
-Wire Wire Line
-	9050 4375 9725 4375
-Wire Wire Line
-	9725 4375 10275 4375
+	8375 4375 10275 4375
 Connection ~ 9050 4375
 Connection ~ 9725 4375
 NoConn ~ 5175 4525
@@ -769,7 +713,7 @@ U 1 1 5AAE9626
 P 1850 3275
 F 0 "J1" H 1850 3575 50  0000 C CNN
 F 1 "Conn_01x05" H 1850 2975 50  0000 C CNN
-F 2 "Pin_Headers:Pin_Header_Straight_1x05_Pitch2.54mm" H 1850 3275 50  0001 C CNN
+F 2 "theapi:Pin_Header_Straight_1x05_Pitch2.54mm" H 1850 3275 50  0001 C CNN
 F 3 "" H 1850 3275 50  0001 C CNN
 	1    1850 3275
 	-1   0    0    -1  
@@ -831,18 +775,12 @@ BATT_SW
 Wire Wire Line
 	2175 1100 2125 1100
 Wire Wire Line
-	2125 1100 2125 1300
-Wire Wire Line
-	2125 1300 2125 1650
+	2125 1100 2125 1650
 Wire Wire Line
 	2125 1650 2175 1650
 Connection ~ 2125 1300
 Wire Wire Line
-	2575 1000 2650 1000
-Wire Wire Line
-	2650 1000 3000 1000
-Wire Wire Line
-	3000 1000 3125 1000
+	2575 1000 3125 1000
 Wire Wire Line
 	2575 1550 2650 1550
 Wire Wire Line
@@ -897,10 +835,10 @@ Wire Wire Line
 	3000 1175 3000 1000
 Connection ~ 3000 1000
 $Comp
-L GND #PWR?
+L GND #PWR015
 U 1 1 5AB0E7F5
 P 3000 1375
-F 0 "#PWR?" H 3000 1125 50  0001 C CNN
+F 0 "#PWR015" H 3000 1125 50  0001 C CNN
 F 1 "GND" H 3000 1225 50  0000 C CNN
 F 2 "" H 3000 1375 50  0001 C CNN
 F 3 "" H 3000 1375 50  0001 C CNN

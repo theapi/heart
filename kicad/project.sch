@@ -713,7 +713,7 @@ U 1 1 5AAE9626
 P 1850 3275
 F 0 "J1" H 1850 3575 50  0000 C CNN
 F 1 "Conn_01x05" H 1850 2975 50  0000 C CNN
-F 2 "Pin_Headers:Pin_Header_Straight_1x05_Pitch2.54mm" H 1850 3275 50  0001 C CNN
+F 2 "theapi:SWD_Header" H 1850 3275 50  0001 C CNN
 F 3 "" H 1850 3275 50  0001 C CNN
 	1    1850 3275
 	-1   0    0    -1  
