@@ -3,7 +3,7 @@
   (general
     (links 69)
     (no_connects 0)
-    (area 101.09984 85.498481 159.15956 143.553153)
+    (area 97.899999 79.3 161.100001 148.700001)
     (thickness 1.6)
     (drawings 95)
     (tracks 258)
@@ -1555,7 +1555,7 @@
   )
 
   (module theapi:TheApiLogoSmall (layer B.Cu) (tedit 5AB1739D) (tstamp 5AB175BB)
-    (at 139.5 88 180)
+    (at 140.5 88.25 180)
     (fp_text reference REF** (at 0.14 0.84 180) (layer B.Fab)
       (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
     )
@@ -1779,12 +1779,12 @@
       (net 3 NRST))
   )
 
-  (module Mounting_Holes:MountingHole_2.2mm_M2_ISO7380_Pad (layer F.Cu) (tedit 56D1B4CB) (tstamp 5AB2BF87)
+  (module Mounting_Holes:MountingHole_2.2mm_M2_ISO7380_Pad (layer F.Cu) (tedit 5AB2C0B2) (tstamp 5AB2BF87)
     (at 130 96)
     (descr "Mounting Hole 2.2mm, M2, ISO7380")
     (tags "mounting hole 2.2mm m2 iso7380")
     (path /5AAE8193)
-    (fp_text reference J2 (at 0 -2.75) (layer F.SilkS)
+    (fp_text reference J2 (at 0 -2.75) (layer F.Fab)
       (effects (font (size 1 1) (thickness 0.15)))
     )
     (fp_text value Conn_01x01 (at 0 2.75) (layer F.Fab)
