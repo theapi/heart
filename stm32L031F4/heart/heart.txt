@@ -1,18 +1,16 @@
 Configuration	heart
-STM32CubeMX 	4.24.0
-Date	03/08/2018
+STM32CubeMX 	4.25.0
+Date	03/23/2018
 MCU	STM32L031F4Px
 
 
 
 PERIPHERALS	MODES	FUNCTIONS	PINS
-RCC	Clock-out	RCC_MCO	PA9
 SYS	Serial_Wire	SYS_SWCLK	PA14
 SYS	Serial_Wire	SYS_SWDIO	PA13
 SYS	SysTick	SYS_VS_Systick	VP_SYS_VS_Systick
 TIM2	PWM Generation CH1	TIM2_CH1	PA5
 TIM2	PWM Generation CH2	TIM2_CH2	PA1
-TIM2	PWM Generation CH4	TIM2_CH4	PB1
 TIM21	PWM Generation CH1	TIM21_CH1	PA2
 TIM21	PWM Generation CH2	TIM21_CH2	PA3
 TIM22	PWM Generation CH1	TIM22_CH1	PA6
@@ -21,15 +19,13 @@ TIM22	PWM Generation CH2	TIM22_CH2	PA7
 
 
 Pin Nb	PINs	FUNCTIONs	LABELs
-6	PA0-CK_IN	GPIO_Output	
 7	PA1	TIM2_CH2	
 8	PA2	TIM21_CH1	
 9	PA3	TIM21_CH2	
+10	PA4	GPIO_Input	
 11	PA5	TIM2_CH1	
 12	PA6	TIM22_CH1	
 13	PA7	TIM22_CH2	
-14	PB1	TIM2_CH4	
-17	PA9	RCC_MCO	
 19	PA13	SYS_SWDIO	
 20	PA14	SYS_SWCLK	
 
@@ -39,7 +35,7 @@ SOFTWARE PROJECT
 
 Project Settings : 
 Project Name : heart
-Project Folder : /home/peter/repos/heart/stm32L031F4/heart
+Project Folder : /Users/peterclarke/repos/heart/stm32L031F4/heart
 Toolchain / IDE : SW4STM32
 Firmware Package Name and Version : STM32Cube FW_L0 V1.10.0
 
@@ -53,8 +49,7 @@ Set all free pins as analog (to optimize the power consumption) : Yes
 
 
 Toolchains Settings : 
-Compiler Optimizations : Balanced Size/Speed
-
+Compiler Optimizations : 
 
 
 
