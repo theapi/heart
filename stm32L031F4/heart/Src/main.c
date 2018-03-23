@@ -137,13 +137,25 @@ int main(void)
       direction = 0;
     }
 
+    /*
+     * Fade all the leds
+     */
+
     // PA1     ------> TIM2_CH2
     htim2.Instance->CCR2 = fade1;
+    // PA2     ------> TIM21_CH1
+    htim21.Instance->CCR1 = fade1;
+    // Opposite direction.
+    //htim21.Instance->CCR1 = 255 - fade1;
+    // PA3     ------> TIM21_CH2
+    htim21.Instance->CCR2 = fade1;
+    // PA5     ------> TIM2_CH1
+    htim2.Instance->CCR1 = fade1;
     // PA6     ------> TIM22_CH1
     htim22.Instance->CCR1 = fade1;
-    // PA2     ------> TIM21_CH1
-    // Opposite direction.
-    htim21.Instance->CCR1 = 255 - fade1;
+    // PA7     ------> TIM22_CH2
+    htim22.Instance->CCR2 = fade1;
+
 
     HAL_Delay(5);
 
