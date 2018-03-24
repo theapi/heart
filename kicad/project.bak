@@ -416,7 +416,7 @@ U 1 1 5AAE8193
 P 1975 4825
 F 0 "J2" H 1975 4925 50  0000 C CNN
 F 1 "Conn_01x01" H 1975 4725 50  0000 C CNN
-F 2 "Mounting_Holes:MountingHole_2.5mm_Pad" H 1975 4825 50  0001 C CNN
+F 2 "Mounting_Holes:MountingHole_2.2mm_M2_ISO7380_Pad" H 1975 4825 50  0001 C CNN
 F 3 "" H 1975 4825 50  0001 C CNN
 	1    1975 4825
 	-1   0    0    1   

@@ -1,7 +1,7 @@
 (export (version D)
   (design
     (source /home/peter/repos/heart/kicad/project.sch)
-    (date "Wed 21 Mar 2018 20:21:28 GMT")
+    (date "Thu 22 Mar 2018 20:14:23 GMT")
     (tool "Eeschema 4.0.7-e2-6376~58~ubuntu16.04.1")
     (sheet (number 1) (name /) (tstamps /)
       (title_block
@@ -23,7 +23,7 @@
       (tstamp 5A9FF0B9))
     (comp (ref R1)
       (value 10K)
-      (footprint Resistors_SMD:R_0805_HandSoldering)
+      (footprint Resistors_SMD:R_0603_HandSoldering)
       (libsource (lib device) (part R))
       (sheetpath (names /) (tstamps /))
       (tstamp 5A9FF0BB))
