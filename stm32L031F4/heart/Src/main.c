@@ -123,41 +123,44 @@ int main(void)
 
   /* USER CODE BEGIN 3 */
 
-    if (direction == 0) {
-        fade1++;
-    } else {
-        fade1--;
+    if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_4)) {
+      // Change fade if button not pressed. It's pull high when not pressed.
+
+      if (direction == 0) {
+          fade1++;
+      } else {
+          fade1--;
+      }
+
+      if (fade1 == 255) {
+        direction = 1;
+        HAL_Delay(1000);
+      } else if (fade1 == 0) {
+        HAL_Delay(500);
+        direction = 0;
+      }
+
+      /*
+       * Fade all the leds
+       */
+
+      // PA1     ------> TIM2_CH2
+      htim2.Instance->CCR2 = fade1;
+      // PA2     ------> TIM21_CH1
+      htim21.Instance->CCR1 = fade1;
+      // Opposite direction.
+      //htim21.Instance->CCR1 = 255 - fade1;
+      // PA3     ------> TIM21_CH2
+      htim21.Instance->CCR2 = fade1;
+      // PA5     ------> TIM2_CH1
+      htim2.Instance->CCR1 = fade1;
+      // PA6     ------> TIM22_CH1
+      htim22.Instance->CCR1 = fade1;
+      // PA7     ------> TIM22_CH2
+      htim22.Instance->CCR2 = fade1;
     }
 
-    if (fade1 == 255) {
-      direction = 1;
-
-    } else if (fade1 == 0) {
-      HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_0);
-      direction = 0;
-    }
-
-    /*
-     * Fade all the leds
-     */
-
-    // PA1     ------> TIM2_CH2
-    htim2.Instance->CCR2 = fade1;
-    // PA2     ------> TIM21_CH1
-    htim21.Instance->CCR1 = fade1;
-    // Opposite direction.
-    //htim21.Instance->CCR1 = 255 - fade1;
-    // PA3     ------> TIM21_CH2
-    htim21.Instance->CCR2 = fade1;
-    // PA5     ------> TIM2_CH1
-    htim2.Instance->CCR1 = fade1;
-    // PA6     ------> TIM22_CH1
-    htim22.Instance->CCR1 = fade1;
-    // PA7     ------> TIM22_CH2
-    htim22.Instance->CCR2 = fade1;
-
-
-    HAL_Delay(5);
+    HAL_Delay(10);
 
   }
   /* USER CODE END 3 */

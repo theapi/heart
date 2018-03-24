@@ -1,6 +1,6 @@
 Configuration	heart
 STM32CubeMX 	4.25.0
-Date	03/23/2018
+Date	03/24/2018
 MCU	STM32L031F4Px
 
 
@@ -35,7 +35,7 @@ SOFTWARE PROJECT
 
 Project Settings : 
 Project Name : heart
-Project Folder : /Users/peterclarke/repos/heart/stm32L031F4/heart
+Project Folder : /home/peter/repos/heart/stm32L031F4/heart
 Toolchain / IDE : SW4STM32
 Firmware Package Name and Version : STM32Cube FW_L0 V1.10.0
 
@@ -49,7 +49,8 @@ Set all free pins as analog (to optimize the power consumption) : Yes
 
 
 Toolchains Settings : 
-Compiler Optimizations : 
+Compiler Optimizations : Balanced Size/Speed
+
 
 
 
