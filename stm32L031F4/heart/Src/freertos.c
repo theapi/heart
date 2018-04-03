@@ -56,6 +56,8 @@
 #include "tim.h"
 #include "main.h"
 
+#define EVENT_BUTTON_BIT ( 1 << 0 )
+
 /* USER CODE END Includes */
 
 /* Variables -----------------------------------------------------------------*/
@@ -63,6 +65,12 @@ osThreadId buttonHandle;
 osThreadId led1Handle;
 
 /* USER CODE BEGIN Variables */
+
+/* Declare a variable to hold the handle of the created event group. */
+EventGroupHandle_t xEventGroupHandle;
+
+/* Declare a variable to hold the data associated with the created event group. */
+StaticEventGroup_t xCreatedEventGroup;
 
 /* USER CODE END Variables */
 
@@ -76,13 +84,31 @@ void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
 /* USER CODE END FunctionPrototypes */
 
+/* GetIdleTaskMemory prototype (linked to static allocation support) */
+void vApplicationGetIdleTaskMemory( StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize );
+
 /* Hook prototypes */
+
+/* USER CODE BEGIN GET_IDLE_TASK_MEMORY */
+static StaticTask_t xIdleTaskTCBBuffer;
+static StackType_t xIdleStack[configMINIMAL_STACK_SIZE];
+  
+void vApplicationGetIdleTaskMemory( StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize )
+{
+  *ppxIdleTaskTCBBuffer = &xIdleTaskTCBBuffer;
+  *ppxIdleTaskStackBuffer = &xIdleStack[0];
+  *pulIdleTaskStackSize = configMINIMAL_STACK_SIZE;
+  /* place for user code */
+}                   
+/* USER CODE END GET_IDLE_TASK_MEMORY */
 
 /* Init FreeRTOS */
 
 void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN Init */
 
+  /* Attempt to create the event group. */
+  xEventGroupHandle = xEventGroupCreateStatic( &xCreatedEventGroup );
        
   /* USER CODE END Init */
 
@@ -121,11 +147,23 @@ void buttonTask(void const * argument)
 {
 
   /* USER CODE BEGIN buttonTask */
+
+
   /* Infinite loop */
   for(;;)
   {
-    /* For now just toggel a led */
+    /* For now just toggle an led */
     HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_0);
+
+    /* Set / unset the event bit depending on the state of the button */
+    if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_4)) {
+      /* todo: debounce */
+      /* Button pulled high when not pressed */
+       xEventGroupClearBits(xEventGroupHandle, EVENT_BUTTON_BIT);
+    } else {
+       xEventGroupSetBits(xEventGroupHandle, EVENT_BUTTON_BIT);
+
+    }
 
     osDelay(500);
   }
@@ -206,8 +244,15 @@ void led1Task(void const * argument)
     // Increment and let overflow back to 0.
     sine_index++;
 
-    // Come back to this loop later.
-    osDelay(10);
+    EventBits_t bits = xEventGroupGetBits(xEventGroupHandle);
+    /* Button is pressed so go slowly */
+    if (bits == 1) {
+      osDelay(100);
+    } else {
+
+      /* Fade fast */
+      osDelay(10);
+    }
   }
 
   /* USER CODE END led1Task */

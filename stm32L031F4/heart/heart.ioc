@@ -1,6 +1,7 @@
 #MicroXplorer Configuration settings - do not modify
 FREERTOS.FootprintOK=true
-FREERTOS.IPParameters=Tasks01,FootprintOK
+FREERTOS.IPParameters=Tasks01,FootprintOK,MEMORY_ALLOCATION
+FREERTOS.MEMORY_ALLOCATION=2
 FREERTOS.Tasks01=button,0,128,buttonTask,Default,NULL,Dynamic,NULL,NULL;led1,0,128,led1Task,Default,NULL,Dynamic,NULL,NULL
 File.Version=6
 KeepUserPlacement=false
