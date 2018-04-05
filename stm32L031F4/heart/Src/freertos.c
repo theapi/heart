@@ -206,7 +206,7 @@ void buttonTask(void const * argument)
         /* Falling edge */
         pressed = 0;
         /* Clear all bits */
-        xEventGroupClearBits(xEventGroupHandle, EV_PATTERN_1_BIT | EV_PATTERN_1_BIT | EV_PRESSED_BIT);
+        xEventGroupClearBits(xEventGroupHandle, EV_PATTERN_2_BIT | EV_PATTERN_1_BIT | EV_PRESSED_BIT);
       }
     } else {
       if (pressed == 0) {
