@@ -111,6 +111,15 @@ int main(void)
   MX_TIM22_Init();
   /* USER CODE BEGIN 2 */
 
+    /* Initialise all the PWM timers */
+  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
+  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
+  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
+  HAL_TIM_PWM_Start(&htim21, TIM_CHANNEL_1);
+  HAL_TIM_PWM_Start(&htim21, TIM_CHANNEL_2);
+  HAL_TIM_PWM_Start(&htim22, TIM_CHANNEL_1);
+  HAL_TIM_PWM_Start(&htim22, TIM_CHANNEL_2);
+
   /* USER CODE END 2 */
 
   /* Call init function for freertos objects (in freertos.c) */
