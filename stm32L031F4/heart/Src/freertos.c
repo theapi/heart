@@ -56,7 +56,11 @@
 #include "tim.h"
 #include "main.h"
 
-#define EVENT_BUTTON_BIT ( 1 << 0 )
+#define EV_PRESSED_BIT ( 1 << 0 )
+/* Pattern 0 is the default pattern that will run when no pattern bits are set */
+#define EV_PATTERN_1_BIT ( 1 << 1 )
+#define EV_PATTERN_2_BIT ( 1 << 2 )
+
 
 /* USER CODE END Includes */
 
@@ -184,24 +188,51 @@ void buttonTask(void const * argument)
 
   /* USER CODE BEGIN buttonTask */
 
+  /* Count the button presses up to the number of possible tasks. */
+  uint8_t count = 0;
+  uint8_t pressed = 0;
 
   /* Infinite loop */
   for(;;)
   {
     /* For now just toggle an led */
-    HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_0);
+    //HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_0);
 
     /* Set / unset the event bit depending on the state of the button */
     if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_4)) {
       /* todo: debounce */
       /* Button pulled high when not pressed */
-       xEventGroupClearBits(xEventGroupHandle, EVENT_BUTTON_BIT);
+      if (pressed == 1) {
+        /* Falling edge */
+        pressed = 0;
+        /* Clear all bits */
+        xEventGroupClearBits(xEventGroupHandle, EV_PATTERN_1_BIT | EV_PATTERN_1_BIT | EV_PRESSED_BIT);
+      }
     } else {
-       xEventGroupSetBits(xEventGroupHandle, EVENT_BUTTON_BIT);
+      if (pressed == 0) {
+        /* Only set events if on a rising edge */
+        pressed = 1;
+        count++;
+        if (count > 2) {
+         count = 0;
+        }
 
+        switch (count) {
+          case 1:
+            xEventGroupSetBits(xEventGroupHandle, EV_PATTERN_1_BIT | EV_PRESSED_BIT);
+            break;
+          case 2:
+            xEventGroupSetBits(xEventGroupHandle, EV_PATTERN_2_BIT | EV_PRESSED_BIT);
+            break;
+          default:
+            /* No pattern bit set so use the default pattern 0 */
+            xEventGroupSetBits(xEventGroupHandle, EV_PRESSED_BIT);
+            break;
+        }
+      }
     }
 
-    osDelay(500);
+    osDelay(30);
   }
   /* USER CODE END buttonTask */
 }
@@ -238,10 +269,9 @@ void led1Task(void const * argument)
 
     EventBits_t bits = xEventGroupGetBits(xEventGroupHandle);
     /* Button is pressed so go slowly */
-    if (bits == 1) {
-      osDelay(100);
+    if ((bits & EV_PRESSED_BIT) == 1) {
+      osDelay(70);
     } else {
-
       /* Fade fast */
       osDelay(10);
     }
