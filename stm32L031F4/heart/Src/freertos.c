@@ -57,10 +57,10 @@
 #include "main.h"
 
 #define EV_PRESSED_BIT ( 1 << 0 )
-/* Pattern 0 is the default pattern that will run when no pattern bits are set */
-#define EV_PATTERN_1_BIT ( 1 << 1 )
-#define EV_PATTERN_2_BIT ( 1 << 2 )
-
+/* Pattern bits in the group event, allows for 7 patterns. */
+#define EV_PATTERN_BIT_1 ( 1 << 1 )
+#define EV_PATTERN_BIT_2 ( 1 << 2 )
+#define EV_PATTERN_BIT_3 ( 1 << 3 )
 
 /* USER CODE END Includes */
 
@@ -192,6 +192,9 @@ void buttonTask(void const * argument)
   uint8_t count = 0;
   uint8_t pressed = 0;
 
+  /* Start with the default pattern */
+  xEventGroupSetBits(xEventGroupHandle, EV_PATTERN_BIT_1 | EV_PRESSED_BIT);
+
   /* Infinite loop */
   for(;;)
   {
@@ -205,8 +208,8 @@ void buttonTask(void const * argument)
       if (pressed == 1) {
         /* Falling edge */
         pressed = 0;
-        /* Clear all bits */
-        xEventGroupClearBits(xEventGroupHandle, EV_PATTERN_2_BIT | EV_PATTERN_1_BIT | EV_PRESSED_BIT);
+        /* Clear the pressed bit */
+        xEventGroupClearBits(xEventGroupHandle, EV_PRESSED_BIT);
       }
     } else {
       if (pressed == 0) {
@@ -217,16 +220,18 @@ void buttonTask(void const * argument)
          count = 0;
         }
 
+        /* Clear all patern bits */
+        xEventGroupClearBits(xEventGroupHandle, EV_PATTERN_BIT_3 | EV_PATTERN_BIT_2 | EV_PATTERN_BIT_1);
         switch (count) {
           case 1:
-            xEventGroupSetBits(xEventGroupHandle, EV_PATTERN_1_BIT | EV_PRESSED_BIT);
+            xEventGroupSetBits(xEventGroupHandle, EV_PATTERN_BIT_2 | EV_PRESSED_BIT);
             break;
           case 2:
-            xEventGroupSetBits(xEventGroupHandle, EV_PATTERN_2_BIT | EV_PRESSED_BIT);
+            xEventGroupSetBits(xEventGroupHandle, EV_PATTERN_BIT_2 | EV_PATTERN_BIT_1 | EV_PRESSED_BIT);
             break;
           default:
-            /* No pattern bit set so use the default pattern 0 */
-            xEventGroupSetBits(xEventGroupHandle, EV_PRESSED_BIT);
+            /* Use the default */
+            xEventGroupSetBits(xEventGroupHandle, EV_PATTERN_BIT_1 | EV_PRESSED_BIT);
             break;
         }
       }
@@ -268,8 +273,8 @@ void led1Task(void const * argument)
     sine_index++;
 
     EventBits_t bits = xEventGroupGetBits(xEventGroupHandle);
-    /* Button is pressed so go slowly */
-    if ((bits & EV_PRESSED_BIT) == 1) {
+    /* Pattern 2 selected */
+    if ((bits & EV_PATTERN_BIT_2) == 1) {
       osDelay(70);
     } else {
       /* Fade fast */
