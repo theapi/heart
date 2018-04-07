@@ -1,9 +1,11 @@
 #MicroXplorer Configuration settings - do not modify
 FREERTOS.FootprintOK=true
-FREERTOS.IPParameters=Tasks01,FootprintOK,MEMORY_ALLOCATION,configTOTAL_HEAP_SIZE
-FREERTOS.MEMORY_ALLOCATION=1
-FREERTOS.Tasks01=button,0,128,buttonTask,Default,NULL,Static,buttonBuffer,buttonControlBlock;patternManager,1,128,patternManagerTask,Default,NULL,Static,patternManagerBuffer,patternManagerControlBlock;pattern1,0,128,pattern1Task,Default,NULL,Static,pattern1Buffer,pattern1ControlBlock;pattern2,0,128,pattern2Task,Default,NULL,Static,pattern2Buffer,pattern2ControlBlock;pattern3,0,128,pattern3Task,Default,NULL,Static,pattern3Buffer,pattern3ControlBlock
-FREERTOS.configTOTAL_HEAP_SIZE=4096
+FREERTOS.INCLUDE_uxTaskGetStackHighWaterMark=1
+FREERTOS.IPParameters=Tasks01,FootprintOK,MEMORY_ALLOCATION,configTOTAL_HEAP_SIZE,configMINIMAL_STACK_SIZE,INCLUDE_uxTaskGetStackHighWaterMark
+FREERTOS.MEMORY_ALLOCATION=2
+FREERTOS.Tasks01=button,0,64,buttonTask,Default,NULL,Dynamic,NULL,NULL;patternManager,1,64,patternManagerTask,Default,NULL,Dynamic,NULL,NULL;pattern1,0,64,pattern1Task,Default,NULL,Dynamic,NULL,NULL;pattern2,0,64,pattern2Task,Default,NULL,Dynamic,NULL,NULL;pattern3,0,64,pattern3Task,Default,NULL,Dynamic,NULL,NULL
+FREERTOS.configMINIMAL_STACK_SIZE=64
+FREERTOS.configTOTAL_HEAP_SIZE=3072
 File.Version=6
 KeepUserPlacement=false
 Mcu.Family=STM32L0

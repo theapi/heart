@@ -66,20 +66,10 @@
 
 /* Variables -----------------------------------------------------------------*/
 osThreadId buttonHandle;
-uint32_t buttonBuffer[ 128 ];
-osStaticThreadDef_t buttonControlBlock;
 osThreadId patternManagerHandle;
-uint32_t patternManagerBuffer[ 128 ];
-osStaticThreadDef_t patternManagerControlBlock;
 osThreadId pattern1Handle;
-uint32_t pattern1Buffer[ 128 ];
-osStaticThreadDef_t pattern1ControlBlock;
 osThreadId pattern2Handle;
-uint32_t pattern2Buffer[ 128 ];
-osStaticThreadDef_t pattern2ControlBlock;
 osThreadId pattern3Handle;
-uint32_t pattern3Buffer[ 128 ];
-osStaticThreadDef_t pattern3ControlBlock;
 
 /* USER CODE BEGIN Variables */
 
@@ -182,23 +172,23 @@ void MX_FREERTOS_Init(void) {
 
   /* Create the thread(s) */
   /* definition and creation of button */
-  osThreadStaticDef(button, buttonTask, osPriorityNormal, 0, 128, buttonBuffer, &buttonControlBlock);
+  osThreadDef(button, buttonTask, osPriorityNormal, 0, 64);
   buttonHandle = osThreadCreate(osThread(button), NULL);
 
   /* definition and creation of patternManager */
-  osThreadStaticDef(patternManager, patternManagerTask, osPriorityAboveNormal, 0, 128, patternManagerBuffer, &patternManagerControlBlock);
+  osThreadDef(patternManager, patternManagerTask, osPriorityAboveNormal, 0, 64);
   patternManagerHandle = osThreadCreate(osThread(patternManager), NULL);
 
   /* definition and creation of pattern1 */
-  osThreadStaticDef(pattern1, pattern1Task, osPriorityNormal, 0, 128, pattern1Buffer, &pattern1ControlBlock);
+  osThreadDef(pattern1, pattern1Task, osPriorityNormal, 0, 64);
   pattern1Handle = osThreadCreate(osThread(pattern1), NULL);
 
   /* definition and creation of pattern2 */
-  osThreadStaticDef(pattern2, pattern2Task, osPriorityNormal, 0, 128, pattern2Buffer, &pattern2ControlBlock);
+  osThreadDef(pattern2, pattern2Task, osPriorityNormal, 0, 64);
   pattern2Handle = osThreadCreate(osThread(pattern2), NULL);
 
   /* definition and creation of pattern3 */
-  osThreadStaticDef(pattern3, pattern3Task, osPriorityNormal, 0, 128, pattern3Buffer, &pattern3ControlBlock);
+  osThreadDef(pattern3, pattern3Task, osPriorityNormal, 0, 64);
   pattern3Handle = osThreadCreate(osThread(pattern3), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
@@ -293,7 +283,7 @@ void patternManagerTask(void const * argument)
           vTaskSuspend( current_pattern );
 
           /* Pattern 2 selected */
-          if ((bits & EV_PATTERN_BIT_2) == 1) {
+          if ((bits & EV_PRESSED_BIT) == 1) {
               current_pattern = pattern2Handle;
               vTaskResume( pattern2Handle );
           } else {
