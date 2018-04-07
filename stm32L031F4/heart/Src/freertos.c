@@ -265,32 +265,38 @@ void patternManagerTask(void const * argument)
 {
   /* USER CODE BEGIN patternManagerTask */
 
-    TaskHandle_t current_pattern = pattern1Handle;
-    EventBits_t current_bits = xEventGroupGetBits(xEventGroupHandle);
+  TaskHandle_t current_pattern = pattern1Handle;
+  EventBits_t current_bits = xEventGroupGetBits(xEventGroupHandle);
 
-    /* Run only pattern 1 task */
-    vTaskSuspend( pattern2Handle );
-    vTaskSuspend( pattern3Handle );
-    vTaskResume( pattern1Handle );
+  /* Run only pattern 1 task */
+  vTaskSuspend( pattern2Handle );
+  vTaskSuspend( pattern3Handle );
+  vTaskResume( pattern1Handle );
 
   /* Infinite loop */
-  for(;;)
-  {
-      EventBits_t bits = xEventGroupGetBits(xEventGroupHandle);
-      /* Change pattern if the bits changed */
-      if (current_bits != bits) {
-          /* Stop the current pattern */
-          vTaskSuspend( current_pattern );
+  for(;;) {
+    EventBits_t bits = xEventGroupGetBits(xEventGroupHandle);
+    /* Change pattern if the bits changed */
+    if (current_bits != bits) {
+      /* Stop the current pattern */
+      vTaskSuspend( current_pattern );
 
-          /* Pattern 2 when button down */
-          if ((bits & EV_PRESSED_BIT) == 1) {
-              current_pattern = pattern2Handle;
-              vTaskResume( pattern2Handle );
-          } else {
-              current_pattern = pattern1Handle;
-              vTaskResume( pattern1Handle );
-          }
+      /* Current pattern based on the number of button presses */
+      switch (bits >> 1) {
+        case 2:
+          current_pattern = pattern2Handle;
+          vTaskResume( pattern2Handle );
+          break;
+        case 3:
+          current_pattern = pattern3Handle;
+          vTaskResume( pattern3Handle );
+          break;
+        default:
+          current_pattern = pattern1Handle;
+          vTaskResume( pattern1Handle );
+          break;
       }
+    }
 
     /* No need to run faster than the button task */
     osDelay(30);
@@ -302,33 +308,35 @@ void patternManagerTask(void const * argument)
 void pattern1Task(void const * argument)
 {
   /* USER CODE BEGIN pattern1Task */
-    /* Index of the sine table */
-    uint8_t sine_index = 0;
+  /* Index of the sine table */
+  uint8_t sine_index = 0;
 
-    /*
-     * Fade all the leds
-     */
-    for(;;) {
-      // PA1     ------> TIM2_CH2
-      htim2.Instance->CCR2 = sine_wave[sine_index];
-      // PA2     ------> TIM21_CH1
-      htim21.Instance->CCR1 = sine_wave[sine_index];
-      // PA3     ------> TIM21_CH2
-      htim21.Instance->CCR2 = sine_wave[sine_index];
-      // PA5     ------> TIM2_CH1
-      htim2.Instance->CCR1 = sine_wave[sine_index];
-      // PA6     ------> TIM22_CH1
-      htim22.Instance->CCR1 = sine_wave[sine_index];
-      // PA7     ------> TIM22_CH2
-      htim22.Instance->CCR2 = sine_wave[sine_index];
+  /* Wait until called */
+  vTaskSuspend( NULL );
 
-      // Increment and let overflow back to 0.
-      sine_index++;
+  /*
+   * Fade all the leds
+   */
+  for(;;) {
+    // PA1     ------> TIM2_CH2
+    htim2.Instance->CCR2 = sine_wave[sine_index];
+    // PA2     ------> TIM21_CH1
+    htim21.Instance->CCR1 = sine_wave[sine_index];
+    // PA3     ------> TIM21_CH2
+    htim21.Instance->CCR2 = sine_wave[sine_index];
+    // PA5     ------> TIM2_CH1
+    htim2.Instance->CCR1 = sine_wave[sine_index];
+    // PA6     ------> TIM22_CH1
+    htim22.Instance->CCR1 = sine_wave[sine_index];
+    // PA7     ------> TIM22_CH2
+    htim22.Instance->CCR2 = sine_wave[sine_index];
 
-      /* Fade fast */
-      osDelay(5);
+    // Increment and let overflow back to 0.
+    sine_index++;
 
-    }
+    /* Fade fast */
+    osDelay(5);
+  }
   /* USER CODE END pattern1Task */
 }
 
@@ -336,33 +344,35 @@ void pattern1Task(void const * argument)
 void pattern2Task(void const * argument)
 {
   /* USER CODE BEGIN pattern2Task */
-    /* Index of the sine table */
-        uint8_t sine_index = 0;
+  /* Index of the sine table */
+  uint8_t sine_index = 0;
 
-        /*
-         * Fade all the leds slowly
-         */
-        for(;;) {
-          // PA1     ------> TIM2_CH2
-          htim2.Instance->CCR2 = sine_wave[sine_index];
-          // PA2     ------> TIM21_CH1
-          htim21.Instance->CCR1 = sine_wave[sine_index];
-          // PA3     ------> TIM21_CH2
-          htim21.Instance->CCR2 = sine_wave[sine_index];
-          // PA5     ------> TIM2_CH1
-          htim2.Instance->CCR1 = sine_wave[sine_index];
-          // PA6     ------> TIM22_CH1
-          htim22.Instance->CCR1 = sine_wave[sine_index];
-          // PA7     ------> TIM22_CH2
-          htim22.Instance->CCR2 = sine_wave[sine_index];
+  /* Wait until called */
+  vTaskSuspend( NULL );
 
-          // Increment and let overflow back to 0.
-          sine_index++;
+  /*
+   * Fade all the leds slowly
+   */
+  for(;;) {
+    // PA1     ------> TIM2_CH2
+    htim2.Instance->CCR2 = sine_wave[sine_index];
+    // PA2     ------> TIM21_CH1
+    htim21.Instance->CCR1 = sine_wave[sine_index];
+    // PA3     ------> TIM21_CH2
+    htim21.Instance->CCR2 = sine_wave[sine_index];
+    // PA5     ------> TIM2_CH1
+    htim2.Instance->CCR1 = sine_wave[sine_index];
+    // PA6     ------> TIM22_CH1
+    htim22.Instance->CCR1 = sine_wave[sine_index];
+    // PA7     ------> TIM22_CH2
+    htim22.Instance->CCR2 = sine_wave[sine_index];
 
+    // Increment and let overflow back to 0.
+    sine_index++;
 
-          osDelay(70);
+    osDelay(70);
 
-        }
+  }
   /* USER CODE END pattern2Task */
 }
 
@@ -370,10 +380,26 @@ void pattern2Task(void const * argument)
 void pattern3Task(void const * argument)
 {
   /* USER CODE BEGIN pattern3Task */
-  /* Infinite loop */
-  for(;;)
-  {
-    osDelay(1000);
+  /* Wait until called */
+  vTaskSuspend( NULL );
+
+  /* Solid on */
+  for(;;) {
+    // PA1     ------> TIM2_CH2
+    htim2.Instance->CCR2 = 127;
+    // PA2     ------> TIM21_CH1
+    htim21.Instance->CCR1 = 127;
+    // PA3     ------> TIM21_CH2
+    htim21.Instance->CCR2 = 127;
+    // PA5     ------> TIM2_CH1
+    htim2.Instance->CCR1 = 127;
+    // PA6     ------> TIM22_CH1
+    htim22.Instance->CCR1 = 127;
+    // PA7     ------> TIM22_CH2
+    htim22.Instance->CCR2 = 127;
+
+    /* No need to come back, nothing changes */
+    osDelay(10000);
   }
   /* USER CODE END pattern3Task */
 }
