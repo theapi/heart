@@ -211,7 +211,7 @@ void buttonTask(void const * argument)
   uint8_t pressed = 0;
 
   /* Start with the default pattern */
-  xEventGroupSetBits(xEventGroupHandle, EV_PATTERN_BIT_1 | EV_PRESSED_BIT);
+  xEventGroupSetBits(xEventGroupHandle, EV_PATTERN_BIT_1);
 
   /* Infinite loop */
   for(;;)
@@ -266,12 +266,12 @@ void patternManagerTask(void const * argument)
   /* USER CODE BEGIN patternManagerTask */
 
     TaskHandle_t current_pattern = pattern1Handle;
-    EventBits_t current_bits = 0;
+    EventBits_t current_bits = xEventGroupGetBits(xEventGroupHandle);
 
-    /* Suspend all the pattern tasks */
-    vTaskSuspend( pattern1Handle );
+    /* Run only pattern 1 task */
     vTaskSuspend( pattern2Handle );
-    vTaskSuspend( pattern2Handle );
+    vTaskSuspend( pattern3Handle );
+    vTaskResume( pattern1Handle );
 
   /* Infinite loop */
   for(;;)
@@ -282,7 +282,7 @@ void patternManagerTask(void const * argument)
           /* Stop the current pattern */
           vTaskSuspend( current_pattern );
 
-          /* Pattern 2 selected */
+          /* Pattern 2 when button down */
           if ((bits & EV_PRESSED_BIT) == 1) {
               current_pattern = pattern2Handle;
               vTaskResume( pattern2Handle );
@@ -305,7 +305,6 @@ void pattern1Task(void const * argument)
     /* Index of the sine table */
     uint8_t sine_index = 0;
 
-
     /*
      * Fade all the leds
      */
@@ -327,7 +326,7 @@ void pattern1Task(void const * argument)
       sine_index++;
 
       /* Fade fast */
-      osDelay(10);
+      osDelay(5);
 
     }
   /* USER CODE END pattern1Task */
