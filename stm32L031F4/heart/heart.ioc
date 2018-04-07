@@ -1,8 +1,9 @@
 #MicroXplorer Configuration settings - do not modify
 FREERTOS.FootprintOK=true
-FREERTOS.IPParameters=Tasks01,FootprintOK,MEMORY_ALLOCATION
-FREERTOS.MEMORY_ALLOCATION=2
-FREERTOS.Tasks01=button,0,128,buttonTask,Default,NULL,Dynamic,NULL,NULL;led1,0,128,led1Task,Default,NULL,Dynamic,NULL,NULL
+FREERTOS.IPParameters=Tasks01,FootprintOK,MEMORY_ALLOCATION,configTOTAL_HEAP_SIZE
+FREERTOS.MEMORY_ALLOCATION=1
+FREERTOS.Tasks01=button,0,128,buttonTask,Default,NULL,Static,buttonBuffer,buttonControlBlock;patternManager,1,128,patternManagerTask,Default,NULL,Static,patternManagerBuffer,patternManagerControlBlock;pattern1,0,128,pattern1Task,Default,NULL,Static,pattern1Buffer,pattern1ControlBlock;pattern2,0,128,pattern2Task,Default,NULL,Static,pattern2Buffer,pattern2ControlBlock;pattern3,0,128,pattern3Task,Default,NULL,Static,pattern3Buffer,pattern3ControlBlock
+FREERTOS.configTOTAL_HEAP_SIZE=4096
 File.Version=6
 KeepUserPlacement=false
 Mcu.Family=STM32L0

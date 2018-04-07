@@ -66,7 +66,20 @@
 
 /* Variables -----------------------------------------------------------------*/
 osThreadId buttonHandle;
-osThreadId led1Handle;
+uint32_t buttonBuffer[ 128 ];
+osStaticThreadDef_t buttonControlBlock;
+osThreadId patternManagerHandle;
+uint32_t patternManagerBuffer[ 128 ];
+osStaticThreadDef_t patternManagerControlBlock;
+osThreadId pattern1Handle;
+uint32_t pattern1Buffer[ 128 ];
+osStaticThreadDef_t pattern1ControlBlock;
+osThreadId pattern2Handle;
+uint32_t pattern2Buffer[ 128 ];
+osStaticThreadDef_t pattern2ControlBlock;
+osThreadId pattern3Handle;
+uint32_t pattern3Buffer[ 128 ];
+osStaticThreadDef_t pattern3ControlBlock;
 
 /* USER CODE BEGIN Variables */
 
@@ -116,7 +129,10 @@ StaticEventGroup_t xCreatedEventGroup;
 
 /* Function prototypes -------------------------------------------------------*/
 void buttonTask(void const * argument);
-void led1Task(void const * argument);
+void patternManagerTask(void const * argument);
+void pattern1Task(void const * argument);
+void pattern2Task(void const * argument);
+void pattern3Task(void const * argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -166,12 +182,24 @@ void MX_FREERTOS_Init(void) {
 
   /* Create the thread(s) */
   /* definition and creation of button */
-  osThreadDef(button, buttonTask, osPriorityNormal, 0, 128);
+  osThreadStaticDef(button, buttonTask, osPriorityNormal, 0, 128, buttonBuffer, &buttonControlBlock);
   buttonHandle = osThreadCreate(osThread(button), NULL);
 
-  /* definition and creation of led1 */
-  osThreadDef(led1, led1Task, osPriorityNormal, 0, 128);
-  led1Handle = osThreadCreate(osThread(led1), NULL);
+  /* definition and creation of patternManager */
+  osThreadStaticDef(patternManager, patternManagerTask, osPriorityAboveNormal, 0, 128, patternManagerBuffer, &patternManagerControlBlock);
+  patternManagerHandle = osThreadCreate(osThread(patternManager), NULL);
+
+  /* definition and creation of pattern1 */
+  osThreadStaticDef(pattern1, pattern1Task, osPriorityNormal, 0, 128, pattern1Buffer, &pattern1ControlBlock);
+  pattern1Handle = osThreadCreate(osThread(pattern1), NULL);
+
+  /* definition and creation of pattern2 */
+  osThreadStaticDef(pattern2, pattern2Task, osPriorityNormal, 0, 128, pattern2Buffer, &pattern2ControlBlock);
+  pattern2Handle = osThreadCreate(osThread(pattern2), NULL);
+
+  /* definition and creation of pattern3 */
+  osThreadStaticDef(pattern3, pattern3Task, osPriorityNormal, 0, 128, pattern3Buffer, &pattern3ControlBlock);
+  pattern3Handle = osThreadCreate(osThread(pattern3), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -220,7 +248,7 @@ void buttonTask(void const * argument)
          count = 0;
         }
 
-        /* Clear all patern bits */
+        /* Clear all pattern bits */
         xEventGroupClearBits(xEventGroupHandle, EV_PATTERN_BIT_3 | EV_PATTERN_BIT_2 | EV_PATTERN_BIT_1);
         switch (count) {
           case 1:
@@ -242,47 +270,123 @@ void buttonTask(void const * argument)
   /* USER CODE END buttonTask */
 }
 
-/* led1Task function */
-void led1Task(void const * argument)
+/* patternManagerTask function */
+void patternManagerTask(void const * argument)
 {
-  /* USER CODE BEGIN led1Task */
+  /* USER CODE BEGIN patternManagerTask */
 
-  /* Index of the sine table */
-  uint8_t sine_index = 0;
+    TaskHandle_t current_pattern = pattern1Handle;
+    EventBits_t current_bits = 0;
 
-  /*
-   * Fade all the leds
-   */
+    /* Suspend all the pattern tasks */
+    vTaskSuspend( pattern1Handle );
+    vTaskSuspend( pattern2Handle );
+    vTaskSuspend( pattern2Handle );
+
+  /* Infinite loop */
   for(;;)
   {
+      EventBits_t bits = xEventGroupGetBits(xEventGroupHandle);
+      /* Change pattern if the bits changed */
+      if (current_bits != bits) {
+          /* Stop the current pattern */
+          vTaskSuspend( current_pattern );
 
-    // PA1     ------> TIM2_CH2
-    htim2.Instance->CCR2 = sine_wave[sine_index];
-    // PA2     ------> TIM21_CH1
-    htim21.Instance->CCR1 = sine_wave[sine_index];
-    // PA3     ------> TIM21_CH2
-    htim21.Instance->CCR2 = sine_wave[sine_index];
-    // PA5     ------> TIM2_CH1
-    htim2.Instance->CCR1 = sine_wave[sine_index];
-    // PA6     ------> TIM22_CH1
-    htim22.Instance->CCR1 = sine_wave[sine_index];
-    // PA7     ------> TIM22_CH2
-    htim22.Instance->CCR2 = sine_wave[sine_index];
+          /* Pattern 2 selected */
+          if ((bits & EV_PATTERN_BIT_2) == 1) {
+              current_pattern = pattern2Handle;
+              vTaskResume( pattern2Handle );
+          } else {
+              current_pattern = pattern1Handle;
+              vTaskResume( pattern1Handle );
+          }
+      }
 
-    // Increment and let overflow back to 0.
-    sine_index++;
+    /* No need to run faster than the button task */
+    osDelay(30);
+  }
+  /* USER CODE END patternManagerTask */
+}
 
-    EventBits_t bits = xEventGroupGetBits(xEventGroupHandle);
-    /* Pattern 2 selected */
-    if ((bits & EV_PATTERN_BIT_2) == 1) {
-      osDelay(70);
-    } else {
+/* pattern1Task function */
+void pattern1Task(void const * argument)
+{
+  /* USER CODE BEGIN pattern1Task */
+    /* Index of the sine table */
+    uint8_t sine_index = 0;
+
+
+    /*
+     * Fade all the leds
+     */
+    for(;;) {
+      // PA1     ------> TIM2_CH2
+      htim2.Instance->CCR2 = sine_wave[sine_index];
+      // PA2     ------> TIM21_CH1
+      htim21.Instance->CCR1 = sine_wave[sine_index];
+      // PA3     ------> TIM21_CH2
+      htim21.Instance->CCR2 = sine_wave[sine_index];
+      // PA5     ------> TIM2_CH1
+      htim2.Instance->CCR1 = sine_wave[sine_index];
+      // PA6     ------> TIM22_CH1
+      htim22.Instance->CCR1 = sine_wave[sine_index];
+      // PA7     ------> TIM22_CH2
+      htim22.Instance->CCR2 = sine_wave[sine_index];
+
+      // Increment and let overflow back to 0.
+      sine_index++;
+
       /* Fade fast */
       osDelay(10);
-    }
-  }
 
-  /* USER CODE END led1Task */
+    }
+  /* USER CODE END pattern1Task */
+}
+
+/* pattern2Task function */
+void pattern2Task(void const * argument)
+{
+  /* USER CODE BEGIN pattern2Task */
+    /* Index of the sine table */
+        uint8_t sine_index = 0;
+
+        /*
+         * Fade all the leds slowly
+         */
+        for(;;) {
+          // PA1     ------> TIM2_CH2
+          htim2.Instance->CCR2 = sine_wave[sine_index];
+          // PA2     ------> TIM21_CH1
+          htim21.Instance->CCR1 = sine_wave[sine_index];
+          // PA3     ------> TIM21_CH2
+          htim21.Instance->CCR2 = sine_wave[sine_index];
+          // PA5     ------> TIM2_CH1
+          htim2.Instance->CCR1 = sine_wave[sine_index];
+          // PA6     ------> TIM22_CH1
+          htim22.Instance->CCR1 = sine_wave[sine_index];
+          // PA7     ------> TIM22_CH2
+          htim22.Instance->CCR2 = sine_wave[sine_index];
+
+          // Increment and let overflow back to 0.
+          sine_index++;
+
+
+          osDelay(70);
+
+        }
+  /* USER CODE END pattern2Task */
+}
+
+/* pattern3Task function */
+void pattern3Task(void const * argument)
+{
+  /* USER CODE BEGIN pattern3Task */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1000);
+  }
+  /* USER CODE END pattern3Task */
 }
 
 /* USER CODE BEGIN Application */
