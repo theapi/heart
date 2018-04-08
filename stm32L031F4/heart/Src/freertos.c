@@ -76,8 +76,6 @@ osThreadId pattern3Handle;
 /* Declare a variable to hold the handle of the created event group. */
 EventGroupHandle_t xEventGroupHandle;
 
-/* Declare a variable to hold the data associated with the created event group. */
-StaticEventGroup_t xCreatedEventGroup;
 
   /* Sine wave table */
   const uint8_t sine_wave[256] = {
@@ -130,23 +128,7 @@ void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
 /* USER CODE END FunctionPrototypes */
 
-/* GetIdleTaskMemory prototype (linked to static allocation support) */
-void vApplicationGetIdleTaskMemory( StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize );
-
 /* Hook prototypes */
-
-/* USER CODE BEGIN GET_IDLE_TASK_MEMORY */
-static StaticTask_t xIdleTaskTCBBuffer;
-static StackType_t xIdleStack[configMINIMAL_STACK_SIZE];
-  
-void vApplicationGetIdleTaskMemory( StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize )
-{
-  *ppxIdleTaskTCBBuffer = &xIdleTaskTCBBuffer;
-  *ppxIdleTaskStackBuffer = &xIdleStack[0];
-  *pulIdleTaskStackSize = configMINIMAL_STACK_SIZE;
-  /* place for user code */
-}                   
-/* USER CODE END GET_IDLE_TASK_MEMORY */
 
 /* Init FreeRTOS */
 
@@ -154,7 +136,7 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN Init */
 
   /* Attempt to create the event group. */
-  xEventGroupHandle = xEventGroupCreateStatic( &xCreatedEventGroup );
+  xEventGroupHandle = xEventGroupCreate();
        
   /* USER CODE END Init */
 

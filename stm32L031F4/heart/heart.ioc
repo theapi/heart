@@ -1,8 +1,9 @@
 #MicroXplorer Configuration settings - do not modify
 FREERTOS.FootprintOK=true
+FREERTOS.HEAP_NUMBER=1
 FREERTOS.INCLUDE_uxTaskGetStackHighWaterMark=1
-FREERTOS.IPParameters=Tasks01,FootprintOK,MEMORY_ALLOCATION,configTOTAL_HEAP_SIZE,configMINIMAL_STACK_SIZE,INCLUDE_uxTaskGetStackHighWaterMark
-FREERTOS.MEMORY_ALLOCATION=2
+FREERTOS.IPParameters=Tasks01,FootprintOK,MEMORY_ALLOCATION,configTOTAL_HEAP_SIZE,configMINIMAL_STACK_SIZE,INCLUDE_uxTaskGetStackHighWaterMark,HEAP_NUMBER
+FREERTOS.MEMORY_ALLOCATION=0
 FREERTOS.Tasks01=button,0,64,buttonTask,Default,NULL,Dynamic,NULL,NULL;patternManager,1,64,patternManagerTask,Default,NULL,Dynamic,NULL,NULL;pattern1,0,64,pattern1Task,Default,NULL,Dynamic,NULL,NULL;pattern2,0,64,pattern2Task,Default,NULL,Dynamic,NULL,NULL;pattern3,0,64,pattern3Task,Default,NULL,Dynamic,NULL,NULL
 FREERTOS.configMINIMAL_STACK_SIZE=64
 FREERTOS.configTOTAL_HEAP_SIZE=3072
