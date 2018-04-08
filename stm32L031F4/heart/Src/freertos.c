@@ -195,9 +195,6 @@ void buttonTask(void const * argument)
   uint8_t count = 0;
   uint8_t pressed = 0;
 
-  /* Start with the default pattern */
-  xEventGroupSetBits(xEventGroupHandle, EV_PATTERN_BIT_1);
-
   /* Infinite loop */
   for(;;) {
     /* Set / unset the event bit depending on the state of the button */
