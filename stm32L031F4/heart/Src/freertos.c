@@ -61,6 +61,9 @@
 #define EV_PATTERN_BIT_1 ( 1 << 1 )
 #define EV_PATTERN_BIT_2 ( 1 << 2 )
 #define EV_PATTERN_BIT_3 ( 1 << 3 )
+#define EV_PATTERN_CHANGE_BIT ( 1 << 4 )
+/* The above bits that define the pattern */
+#define PATTERN_BIT_MASK 0b0001110
 
 /* USER CODE END Includes */
 
@@ -196,11 +199,7 @@ void buttonTask(void const * argument)
   xEventGroupSetBits(xEventGroupHandle, EV_PATTERN_BIT_1);
 
   /* Infinite loop */
-  for(;;)
-  {
-    /* For now just toggle an led */
-    //HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_0);
-
+  for(;;) {
     /* Set / unset the event bit depending on the state of the button */
     if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_4)) {
       /* todo: debounce */
@@ -224,14 +223,14 @@ void buttonTask(void const * argument)
         xEventGroupClearBits(xEventGroupHandle, EV_PATTERN_BIT_3 | EV_PATTERN_BIT_2 | EV_PATTERN_BIT_1);
         switch (count) {
           case 1:
-            xEventGroupSetBits(xEventGroupHandle, EV_PATTERN_BIT_2 | EV_PRESSED_BIT);
+            xEventGroupSetBits(xEventGroupHandle, EV_PATTERN_CHANGE_BIT | EV_PATTERN_BIT_2 | EV_PRESSED_BIT);
             break;
           case 2:
-            xEventGroupSetBits(xEventGroupHandle, EV_PATTERN_BIT_2 | EV_PATTERN_BIT_1 | EV_PRESSED_BIT);
+            xEventGroupSetBits(xEventGroupHandle, EV_PATTERN_CHANGE_BIT | EV_PATTERN_BIT_2 | EV_PATTERN_BIT_1 | EV_PRESSED_BIT);
             break;
           default:
             /* Use the default */
-            xEventGroupSetBits(xEventGroupHandle, EV_PATTERN_BIT_1 | EV_PRESSED_BIT);
+            xEventGroupSetBits(xEventGroupHandle, EV_PATTERN_CHANGE_BIT | EV_PATTERN_BIT_1 | EV_PRESSED_BIT);
             break;
         }
       }
@@ -248,40 +247,39 @@ void patternManagerTask(void const * argument)
   /* USER CODE BEGIN patternManagerTask */
 
   TaskHandle_t current_pattern = pattern1Handle;
-  EventBits_t current_bits = xEventGroupGetBits(xEventGroupHandle);
-
-  /* Run only pattern 1 task */
-  vTaskSuspend( pattern2Handle );
-  vTaskSuspend( pattern3Handle );
-  vTaskResume( pattern1Handle );
 
   /* Infinite loop */
   for(;;) {
-    EventBits_t bits = xEventGroupGetBits(xEventGroupHandle);
-    /* Change pattern if the bits changed */
-    if (current_bits != bits) {
-      /* Stop the current pattern */
-      vTaskSuspend( current_pattern );
+    /* Wait for the change pattern bit, then clear it */
+    EventBits_t bits = xEventGroupWaitBits(
+            xEventGroupHandle,
+            EV_PATTERN_CHANGE_BIT,
+            pdTRUE,
+            pdTRUE,
+            portMAX_DELAY );
 
-      /* Current pattern based on the number of button presses */
-      switch (bits >> 1) {
-        case 2:
-          current_pattern = pattern2Handle;
-          vTaskResume( pattern2Handle );
-          break;
-        case 3:
-          current_pattern = pattern3Handle;
-          vTaskResume( pattern3Handle );
-          break;
-        default:
-          current_pattern = pattern1Handle;
-          vTaskResume( pattern1Handle );
-          break;
-      }
+    /* Show when a pattern change is happening */
+    HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_0);
+
+    /* Stop the current pattern */
+    vTaskSuspend( current_pattern );
+
+    /* Current pattern based on the number of button presses */
+    uint8_t pattern = (bits & PATTERN_BIT_MASK) >> 1;
+    switch (pattern) {
+      case 2:
+        current_pattern = pattern2Handle;
+        vTaskResume( pattern2Handle );
+        break;
+      case 3:
+        current_pattern = pattern3Handle;
+        vTaskResume( pattern3Handle );
+        break;
+      default:
+        current_pattern = pattern1Handle;
+        vTaskResume( pattern1Handle );
+        break;
     }
-
-    /* No need to run faster than the button task */
-    osDelay(30);
   }
   /* USER CODE END patternManagerTask */
 }
@@ -292,9 +290,6 @@ void pattern1Task(void const * argument)
   /* USER CODE BEGIN pattern1Task */
   /* Index of the sine table */
   uint8_t sine_index = 0;
-
-  /* Wait until called */
-  vTaskSuspend( NULL );
 
   /*
    * Fade all the leds
@@ -350,9 +345,10 @@ void pattern2Task(void const * argument)
     htim22.Instance->CCR2 = sine_wave[sine_index];
 
     // Increment and let overflow back to 0.
-    sine_index++;
+    //sine_index++;
+    sine_index = sine_index + 16;
 
-    osDelay(70);
+    osDelay(10);
 
   }
   /* USER CODE END pattern2Task */
@@ -368,17 +364,17 @@ void pattern3Task(void const * argument)
   /* Solid on */
   for(;;) {
     // PA1     ------> TIM2_CH2
-    htim2.Instance->CCR2 = 127;
+    htim2.Instance->CCR2 = 20;
     // PA2     ------> TIM21_CH1
-    htim21.Instance->CCR1 = 127;
+    htim21.Instance->CCR1 = 20;
     // PA3     ------> TIM21_CH2
-    htim21.Instance->CCR2 = 127;
+    htim21.Instance->CCR2 = 20;
     // PA5     ------> TIM2_CH1
-    htim2.Instance->CCR1 = 127;
+    htim2.Instance->CCR1 = 20;
     // PA6     ------> TIM22_CH1
-    htim22.Instance->CCR1 = 127;
+    htim22.Instance->CCR1 = 20;
     // PA7     ------> TIM22_CH2
-    htim22.Instance->CCR2 = 127;
+    htim22.Instance->CCR2 = 20;
 
     /* No need to come back, nothing changes */
     osDelay(10000);
