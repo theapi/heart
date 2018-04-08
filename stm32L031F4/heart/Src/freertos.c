@@ -55,6 +55,7 @@
 #include "gpio.h"
 #include "tim.h"
 #include "main.h"
+#include <stdbool.h>
 
 #define EV_PRESSED_BIT ( 1 << 0 )
 /* Pattern bits in the group event, allows for 7 patterns. */
@@ -128,6 +129,7 @@ void pattern3Task(void const * argument);
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
 /* USER CODE BEGIN FunctionPrototypes */
+bool buttonPressed(void);
 
 /* USER CODE END FunctionPrototypes */
 
@@ -193,24 +195,19 @@ void buttonTask(void const * argument)
 
   /* Count the button presses up to the number of possible tasks. */
   uint8_t count = 0;
-  uint8_t pressed = 0;
+  bool pressed = 0;
+  bool button_state = 0;
 
-  /* Infinite loop */
   for(;;) {
     /* Set / unset the event bit depending on the state of the button */
-    if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_4)) {
-      /* todo: debounce */
-      /* Button pulled high when not pressed */
-      if (pressed == 1) {
-        /* Falling edge */
-        pressed = 0;
+    pressed = buttonPressed();
+    /* Only act on an edge */
+    if (button_state != pressed) {
+      button_state = pressed;
+      if (!pressed) {
         /* Clear the pressed bit */
         xEventGroupClearBits(xEventGroupHandle, EV_PRESSED_BIT);
-      }
-    } else {
-      if (pressed == 0) {
-        /* Only set events if on a rising edge */
-        pressed = 1;
+      } else {
         count++;
         if (count > 2) {
          count = 0;
@@ -233,7 +230,7 @@ void buttonTask(void const * argument)
       }
     }
 
-    osDelay(30);
+    osDelay(20);
   }
   /* USER CODE END buttonTask */
 }
@@ -380,6 +377,53 @@ void pattern3Task(void const * argument)
 }
 
 /* USER CODE BEGIN Application */
+
+bool buttonPressed(void) {
+  static bool pressed = false;
+  /* 0 = released, 1 = maybe pressed, 2 = pressed, 3 = maybe released */
+  uint8_t state = 0;
+  GPIO_PinState button;
+  /* Button pulled high when not pressed */
+  button = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_4);
+
+  /* Debounce */
+  switch (state) {
+    case 0:
+      /* Not pressed */
+      if (button == GPIO_PIN_RESET) {
+        state = 1;
+      }
+      break;
+    case 1:
+      /* Maybe pressed */
+      if (button == GPIO_PIN_RESET) {
+        state = 2;
+        pressed = true;
+      } else {
+        /* Not pressed, just a bounce */
+        state = 0;
+      }
+      break;
+    case 2:
+      /* Pressed */
+      if (button == GPIO_PIN_SET) {
+        state = 3;
+      }
+      break;
+    case 3:
+      /* Maybe released */
+      if (button == GPIO_PIN_SET) {
+        state = 0;
+        pressed = false;
+      } else {
+        /* Just a bounce */
+        state = 2;
+      }
+      break;
+  }
+
+  return pressed;
+}
      
 /* USER CODE END Application */
 
