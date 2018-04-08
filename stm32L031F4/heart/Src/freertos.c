@@ -381,10 +381,10 @@ void pattern3Task(void const * argument)
 bool buttonPressed(void) {
   static bool pressed = false;
   /* 0 = released, 1 = maybe pressed, 2 = pressed, 3 = maybe released */
-  uint8_t state = 0;
-  GPIO_PinState button;
+  static uint8_t state = 0;
+
   /* Button pulled high when not pressed */
-  button = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_4);
+  GPIO_PinState button = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_4);
 
   /* Debounce */
   switch (state) {
