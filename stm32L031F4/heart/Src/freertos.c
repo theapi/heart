@@ -305,8 +305,8 @@ void pattern1Task(void const * argument)
     // Increment and let overflow back to 0.
     sine_index++;
 
-    /* Fade fast */
-    osDelay(5);
+    /* Fade */
+    osDelay(20);
   }
   /* USER CODE END pattern1Task */
 }
