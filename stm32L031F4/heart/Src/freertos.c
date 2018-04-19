@@ -376,17 +376,17 @@ void pattern3Task(void const * argument)
   /* Solid on */
   for(;;) {
     // PA1     ------> TIM2_CH2
-    htim2.Instance->CCR2 = 20;
+    htim2.Instance->CCR2 = 127;
     // PA2     ------> TIM21_CH1
-    htim21.Instance->CCR1 = 20;
+    htim21.Instance->CCR1 = 127;
     // PA3     ------> TIM21_CH2
-    htim21.Instance->CCR2 = 20;
+    htim21.Instance->CCR2 = 127;
     // PA5     ------> TIM2_CH1
-    htim2.Instance->CCR1 = 20;
+    htim2.Instance->CCR1 = 127;
     // PA6     ------> TIM22_CH1
-    htim22.Instance->CCR1 = 20;
+    htim22.Instance->CCR1 = 127;
     // PA7     ------> TIM22_CH2
-    htim22.Instance->CCR2 = 20;
+    htim22.Instance->CCR2 = 127;
 
     /* No need to come back, nothing changes */
     osDelay(10000);
@@ -396,46 +396,46 @@ void pattern3Task(void const * argument)
 
 /* USER CODE BEGIN Application */
 
+/**
+ * State machine to monitor whether the buton is pressed.
+ */
 bool buttonPressed(void) {
+  enum button_state {BST_RELEASED, BST_MAYBE_PRESSED, BST_PRESSED, BST_MAYBE_RELEASED};
+
   static bool pressed = false;
-  /* 0 = released, 1 = maybe pressed, 2 = pressed, 3 = maybe released */
-  static uint8_t state = 0;
+  static enum button_state state = BST_RELEASED;
 
   /* Button pulled high when not pressed */
   GPIO_PinState button = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_4);
 
   /* Debounce */
   switch (state) {
-    case 0:
-      /* Not pressed */
+    case BST_RELEASED:
       if (button == GPIO_PIN_RESET) {
-        state = 1;
+        state = BST_MAYBE_PRESSED;
       }
       break;
-    case 1:
-      /* Maybe pressed */
+    case BST_MAYBE_PRESSED:
       if (button == GPIO_PIN_RESET) {
-        state = 2;
+        state = BST_PRESSED;
         pressed = true;
       } else {
         /* Not pressed, just a bounce */
-        state = 0;
+        state = BST_RELEASED;
       }
       break;
-    case 2:
-      /* Pressed */
+    case BST_PRESSED:
       if (button == GPIO_PIN_SET) {
-        state = 3;
+        state = BST_MAYBE_RELEASED;
       }
       break;
-    case 3:
-      /* Maybe released */
+    case BST_MAYBE_RELEASED:
       if (button == GPIO_PIN_SET) {
-        state = 0;
+        state = BST_RELEASED;
         pressed = false;
       } else {
         /* Just a bounce */
-        state = 2;
+        state = BST_PRESSED;
       }
       break;
   }
