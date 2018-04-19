@@ -324,9 +324,11 @@ void pattern2Task(void const * argument)
 {
   /* USER CODE BEGIN pattern2Task */
   /* Index of the sine table */
-  uint8_t sine_index = 0;
-  uint8_t sine_index_b = 85;
-  uint8_t sine_index_c = 170;
+  uint8_t sine_index_1 = 0;
+  uint8_t sine_index_2 = 42;
+  uint8_t sine_index_3 = 84;
+  uint8_t sine_index_4 = 126;
+  uint8_t sine_index_5 = 168;
 
   /* Wait until called */
   vTaskSuspend( NULL );
@@ -337,30 +339,32 @@ void pattern2Task(void const * argument)
   for(;;) {
     // PA1     ------> TIM2_CH2
     /* The bottom led */
-    htim2.Instance->CCR2 = sine_wave[sine_index_c];
+    htim2.Instance->CCR2 = sine_wave[sine_index_1];
     // PA2     ------> TIM21_CH1
     /* The centre led */
-    htim21.Instance->CCR1 = sine_wave[sine_index_b];
+    htim21.Instance->CCR1 = 255;
     // PA3     ------> TIM21_CH2
     /* Middle left */
-    htim21.Instance->CCR2 = sine_wave[sine_index_b];
+    htim21.Instance->CCR2 = sine_wave[sine_index_5];
     // PA5     ------> TIM2_CH1
     /* Middle right */
-    htim2.Instance->CCR1 = sine_wave[sine_index_b];
+    htim2.Instance->CCR1 = sine_wave[sine_index_2];
     // PA6     ------> TIM22_CH1
     /* Top left */
-    htim22.Instance->CCR1 = sine_wave[sine_index];
+    htim22.Instance->CCR1 = sine_wave[sine_index_4];
     // PA7     ------> TIM22_CH2
     /* Top right */
-    htim22.Instance->CCR2 = sine_wave[sine_index];
+    htim22.Instance->CCR2 = sine_wave[sine_index_3];
 
     // Increment and let overflow back to 0.
     //sine_index++;
-    sine_index++;
-    sine_index_b++;
-    sine_index_c++;
+    sine_index_1++;
+    sine_index_2++;
+    sine_index_3++;
+    sine_index_4++;
+    sine_index_5++;
 
-    osDelay(20);
+    osDelay(15);
 
   }
   /* USER CODE END pattern2Task */
