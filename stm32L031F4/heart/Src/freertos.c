@@ -123,6 +123,7 @@ EventGroupHandle_t xEventGroupHandle;
 /* Function prototypes -------------------------------------------------------*/
 void buttonTask(void const * argument);
 void patternManagerTask(void const * argument);
+TaskHandle_t patternSelect(EventBits_t bits);
 void pattern1Task(void const * argument);
 void pattern2Task(void const * argument);
 void pattern3Task(void const * argument);
@@ -242,6 +243,7 @@ void patternManagerTask(void const * argument)
   /* USER CODE BEGIN patternManagerTask */
 
   EventBits_t bits;
+  // patternSelect(EventBits_t bits)
   TaskHandle_t current_pattern = pattern1Handle;
 
   /* Infinite loop */
@@ -260,22 +262,9 @@ void patternManagerTask(void const * argument)
     /* Stop the current pattern */
     vTaskSuspend( current_pattern );
 
-    /* Current pattern based on the number of button presses */
-    uint8_t pattern = (bits & PATTERN_BIT_MASK) >> 1;
-    switch (pattern) {
-      case 2:
-        current_pattern = pattern2Handle;
-        vTaskResume( pattern2Handle );
-        break;
-      case 3:
-        current_pattern = pattern3Handle;
-        vTaskResume( pattern3Handle );
-        break;
-      default:
-        current_pattern = pattern1Handle;
-        vTaskResume( pattern1Handle );
-        break;
-    }
+    /* Select the new pattern */
+    current_pattern = patternSelect(bits);
+    vTaskResume( current_pattern );
   }
   /* USER CODE END patternManagerTask */
 }
@@ -401,6 +390,16 @@ void pattern3Task(void const * argument)
 }
 
 /* USER CODE BEGIN Application */
+
+TaskHandle_t patternSelect(EventBits_t bits) {
+  /* Current pattern based on the number of button presses */
+  uint8_t pattern = (bits & PATTERN_BIT_MASK) >> 1;
+  switch (pattern) {
+    case 2: return pattern2Handle;
+    case 3: return pattern3Handle;
+    default: return pattern1Handle;
+  }
+}
 
 /**
  * State machine to monitor whether the buton is pressed.
