@@ -56,6 +56,7 @@
 #include "tim.h"
 #include "main.h"
 #include <stdbool.h>
+#include "eeprom.h"
 
 #define EV_PRESSED_BIT ( 1 << 0 )
 /* Pattern bits in the group event, allows for 7 patterns. */
@@ -240,12 +241,13 @@ void patternManagerTask(void const * argument)
 {
   /* USER CODE BEGIN patternManagerTask */
 
+  EventBits_t bits;
   TaskHandle_t current_pattern = pattern1Handle;
 
   /* Infinite loop */
   for(;;) {
     /* Wait for the change pattern bit, then clear it */
-    EventBits_t bits = xEventGroupWaitBits(
+    bits = xEventGroupWaitBits(
             xEventGroupHandle,
             EV_PATTERN_CHANGE_BIT,
             pdTRUE,
