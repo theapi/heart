@@ -78,6 +78,8 @@ osThreadId pattern3Handle;
 
 /* USER CODE BEGIN Variables */
 
+TaskHandle_t current_pattern;
+
 /* Declare a variable to hold the handle of the created event group. */
 EventGroupHandle_t xEventGroupHandle;
 
@@ -123,6 +125,7 @@ EventGroupHandle_t xEventGroupHandle;
 /* Function prototypes -------------------------------------------------------*/
 void buttonTask(void const * argument);
 void patternManagerTask(void const * argument);
+TaskHandle_t patternSelect(uint8_t pattern);
 void pattern1Task(void const * argument);
 void pattern2Task(void const * argument);
 void pattern3Task(void const * argument);
@@ -231,6 +234,9 @@ void buttonTask(void const * argument)
       }
     }
 
+    /* Kludge to start the pattern going */
+    vTaskResume( current_pattern );
+
     osDelay(20);
   }
   /* USER CODE END buttonTask */
@@ -242,7 +248,8 @@ void patternManagerTask(void const * argument)
   /* USER CODE BEGIN patternManagerTask */
 
   EventBits_t bits;
-  TaskHandle_t current_pattern = pattern1Handle;
+  uint8_t pattern = (uint8_t) EEPROM_DataLoad(0);
+  current_pattern = patternSelect(pattern);
 
   /* Infinite loop */
   for(;;) {
@@ -257,25 +264,15 @@ void patternManagerTask(void const * argument)
     /* Show when a pattern change is happening */
     HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_0);
 
+    /* Select the new pattern */
+    uint8_t pattern = (bits & PATTERN_BIT_MASK) >> 1;
+    /* Remember the pattern when off */
+    EEPROM_DataSave(0, pattern);
     /* Stop the current pattern */
     vTaskSuspend( current_pattern );
-
-    /* Current pattern based on the number of button presses */
-    uint8_t pattern = (bits & PATTERN_BIT_MASK) >> 1;
-    switch (pattern) {
-      case 2:
-        current_pattern = pattern2Handle;
-        vTaskResume( pattern2Handle );
-        break;
-      case 3:
-        current_pattern = pattern3Handle;
-        vTaskResume( pattern3Handle );
-        break;
-      default:
-        current_pattern = pattern1Handle;
-        vTaskResume( pattern1Handle );
-        break;
-    }
+    current_pattern = patternSelect(pattern);
+    /* Start the selected one */
+    vTaskResume( current_pattern );
   }
   /* USER CODE END patternManagerTask */
 }
@@ -287,6 +284,9 @@ void pattern1Task(void const * argument)
   /* Index of the sine table */
   uint8_t sine_index = 0;
   uint8_t sine_index_b = 127;
+
+  /* Wait until called */
+  vTaskSuspend( NULL );
 
   /*
    * Fade all the leds
@@ -401,6 +401,15 @@ void pattern3Task(void const * argument)
 }
 
 /* USER CODE BEGIN Application */
+
+TaskHandle_t patternSelect(uint8_t pattern) {
+  /* Current pattern based on the number of button presses */
+  switch (pattern) {
+    case 2: return pattern2Handle;
+    case 3: return pattern3Handle;
+    default: return pattern1Handle;
+  }
+}
 
 /**
  * State machine to monitor whether the buton is pressed.
